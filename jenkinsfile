@@ -12,10 +12,23 @@ pipeline {
   }
 
   stages {
+    
+    stage('Checkout') {
+        steps {
+            git branch: 'master',
+                credentialsId: 'my_cred_id',
+                url: 'https://github.com/99harshil/AWS-Terraform-infrastructure.git'
+
+            sh "ls"
+        }
+    }
+
     stage('init') {
       steps {
         dir('terraform/backend') {
-          sh 'terraform init'
+          withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
+             terraform init
+          }
         }
       }
     }
