@@ -11,3 +11,13 @@ pipeline {
         TF_IN_AUTOMATION      = '1'
     }
 }
+
+stages {
+  stage('init') {
+    steps {
+      dir('terraform/backend') {
+        sh 'terraform init'
+      }
+    }
+  }
+}
