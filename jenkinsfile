@@ -21,7 +21,7 @@ pipeline {
         }
     }
 
-    stage('backend') {
+    stage('appply') {
       when { 
         expression { params.action == 'apply' }
       }
@@ -34,7 +34,9 @@ pipeline {
           }
         }
       }
+    }
 
+    stage('destroy') {
       when {
         expression { params.action == 'destroy' }
       }
