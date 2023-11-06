@@ -27,7 +27,7 @@ pipeline {
       steps {
         dir('terraform/backend') {
           withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
-             terraform init
+             sh 'terraform init'
           }
         }
       }
