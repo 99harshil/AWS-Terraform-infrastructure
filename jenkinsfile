@@ -2,7 +2,11 @@ pipeline {
   agent any
    
   parameters {
-    booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?') 
+    choice(
+            choices: ['apply', 'destroy'],
+            description: 'Terraform action to apply or destroy',
+            name: 'action'
+    )
   }
   
   stages {
@@ -17,11 +21,27 @@ pipeline {
         }
     }
 
-    stage('init') {
+    stage('backend') {
+      when { 
+        expression { params.action == 'apply' }
+      }
       steps {
         dir('terraform/backend') {
           withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
              sh 'terraform init'
+	     sh 'terraform plan'
+             sh 'terraform apply -auto-approve'
+          }
+        }
+      }
+
+      when {
+        expression { params.action == 'destroy' }
+      }
+      steps {
+        dir('terraform/backend') {
+          withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
+             sh 'terraform destroy -auto-approve'
           }
         }
       }
