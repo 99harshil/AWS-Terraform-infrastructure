@@ -13,12 +13,12 @@ variable "basename" {
 variable "bucket_name" {
   type        = string
   description = "Name of s3 bucket to use AWS resources"
-  default     = "harshilthakkar-bucket"
+  default     = "tfstate-harshil-bucket"
 }
 
 variable "table_name" {
   type        = string
   description = "Name of dynamodb table to use for all AWS resources"
-  default     = "terraform-table"
+  default     = "tfstate-harshil-table"
 }
 
