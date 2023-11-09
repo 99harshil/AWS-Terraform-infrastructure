@@ -31,14 +31,15 @@ pipeline {
             expression { params.action == 'apply' }
         }
         steps {
+            def elementsToRun = params.subdirectories.split(',')
             dir('terraform/backend') {
                 withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
                     sh 'terraform init'
-	                sh 'terraform plan'
+	            sh 'terraform plan'
                     sh 'terraform apply -auto-approve'
             }
             
-            for (subdir in params.subdirectories.split(',')) {
+            for (subdir in elementsToRun) {
                 sh 'echo "Running Terraform in ${subdir}"'
                 if (${subdir} == 'vpc') {
                     dir(subdir) {
@@ -60,12 +61,13 @@ pipeline {
             expression { params.action == 'destroy' }
         }
         steps {
+            def elementsToRun = params.subdirectories.split(',')
             dir('terraform/backend') {
                 withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
-            for (subdir in params.subdirectories.split(',')) {
+            for (subdir in elementsToRun) {
                 sh 'echo "Running Terraform in ${subdir}"'
                 dir(subdir) {
                         sh 'terraform destroy'
