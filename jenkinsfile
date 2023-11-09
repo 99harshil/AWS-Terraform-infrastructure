@@ -7,6 +7,11 @@ pipeline {
             description: 'Terraform action to apply or destroy',
             name: 'action'
     )
+    choice(
+            choices: ['vpc',],
+            description: 'Name of Terraform Sub directories',
+            name: 'subdirectories'
+    )
   }
   
   stages {
@@ -21,32 +26,52 @@ pipeline {
         }
     }
 
-    stage('appply') {
-      when { 
-        expression { params.action == 'apply' }
-      }
-      steps {
-        dir('terraform/backend') {
-          withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
-             sh 'terraform init'
-	     sh 'terraform plan'
-             sh 'terraform apply -auto-approve'
-          }
+    stage('apply') {
+        when { 
+            expression { params.action == 'apply' }
         }
-      }
+        steps {
+            dir('terraform/backend') {
+                withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
+                    sh 'terraform init'
+	                sh 'terraform plan'
+                    sh 'terraform apply -auto-approve'
+            }
+            
+            for (subdir in params.subdirectories.split(',')) {
+                sh 'echo "Running Terraform in ${subdir}"'
+                if (${subdir} == 'vpc') {
+                    dir(subdir) {
+                        sh 'terraform init'
+                        sh 'terraform apply -target="aws_vpc.vpc" -target="aws_subnet.public_subnet" -target="aws_subnet.private_subnet" -auto-approve'
+                        sh 'terraform apply'
+                    }
+                }
+                else {
+                           sh 'echo "Running Terraform in ${subdir}"'
+                    }
+            }
+          }
+       }
     }
 
     stage('destroy') {
-      when {
-        expression { params.action == 'destroy' }
-      }
-      steps {
-        dir('terraform/backend') {
-          withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
-             sh 'terraform destroy -auto-approve'
-          }
+        when {
+            expression { params.action == 'destroy' }
         }
-      }
+        steps {
+            dir('terraform/backend') {
+                withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') {
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+            for (subdir in params.subdirectories.split(',')) {
+                sh 'echo "Running Terraform in ${subdir}"'
+                dir(subdir) {
+                        sh 'terraform destroy'
+                }
+            }
+        }
     }
   }
 }
