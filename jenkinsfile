@@ -41,11 +41,12 @@ pipeline
             	script
 		{
             		def apply_list = ['vpc']
-			for (subdir in apply_list) 
+			for (int i = 0; i < apply_list.size(); ++i)  
 			{
-                		sh 'echo "Running Terraform in ${subdir}"'
-                		if (${subdir} == 'vpc') 
+                		sh 'echo "Running Terraform in ${apply_list[i]}"'
+                		if (${apply_list[i] == 'vpc') 
 				{
+					sh 'echo "in nested if condition"'
                     			dir(subdir) 
 					{
                         			sh 'terraform init -upgrade'
