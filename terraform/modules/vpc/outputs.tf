@@ -10,7 +10,7 @@ output "vpc_cidr" {
 
 output "internet_gateway" {
   description = "Intenet Gateway id for allowing elements to access internet"
-  value       = "${aws_internet_gateway.internet_gateway.id}"
+  value       = ["${aws_internet_gateway.internet_gateway.*.id}"]
 }
 
 output "public_subnets" {
@@ -45,7 +45,7 @@ output "private_route_table_id" {
 
 output "nat_gateway_id" {
   description = "ID of NAT Gateway"
-  value       = aws_nat_gateway.nat.id
+  value       = [aws_nat_gateway.nat.*.id]
 }
 
 output "public_nacl_id" {

@@ -16,6 +16,18 @@ variable "span_az" {
   default     = 2
 }
 
+variable "enable_ig" {
+  type        = bool
+  description = "Value for creating Intenet Gatewway"
+  default     = false
+}
+
+variable "enable_ng" {
+  type        = bool
+  description = "Value for creating NAT Gateway"
+  default     = false
+}
+
 variable "nacl_rules" {
   description = "defining inbound and outbound rules"
   type        = list(map(string))

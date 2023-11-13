@@ -35,6 +35,16 @@ variable "name" {
   description = "Name of Networking elements"
 }
 
+variable "create_internet_gateway" {
+  type        = bool
+  description = "Bool value for creating Internet gateway"
+}
+
+variable "enable_nat_gateway" {
+  type        = bool
+  description = "bool value for creating Nat Gateway"
+}
+
 # NACL Rule Numbers
 # 1xx: General public ingress
 # 2xx: General public egress

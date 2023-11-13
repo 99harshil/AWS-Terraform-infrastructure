@@ -163,41 +163,31 @@ tf_deploy() {
         			return 1
     			fi
 
-         		if [ -z "${var_file}" ]; then
-        			var_file='terraform.tfvars'
-			fi
-
-			if [ -z "${plan_file}" ]; then
-        			plan_file='plan_file'
-			fi
-  			
-		   	if
- 				"${TERRAFORM}"            \
-        	                plan                  \
-	                       	-input=false          \
-                       		-target="aws_vpc.vpc"          \
-	                       	-target="aws_subnet.public_subnet"          \
-        	               	-target="aws_subnet.private_subnet"          \
+ 			"${TERRAFORM}"            \
+        	        plan                  \
+			-input=false          \
+                       	-target="module.vpc.aws_vpc.vpc"          \
+	             	-target="module.vpc.aws_subnet.public_subnet"          \
+        	      	-target="module.vpc.aws_subnet.private_subnet"          
 	
-				"${TERRAFORM}"            \
-                	       	apply                 \
-                       		-auto-approve         \
-	                       	-input=false          \
-				-target="aws_vpc.vpc"          \
-                                -target="aws_subnet.public_subnet"          \
-                                -target="aws_subnet.private_subnet"          \
-	
-				"${TERRAFORM}"            \
-       				plan                  \
-	                        -input=false          \
-       			        -out="${plan_file}"
+			"${TERRAFORM}"            \
+               	       	apply                 \
+			-auto-approve         \
+			-input=false          \
+			-target="module.vpc.aws_vpc.vpc"          \
+			-target="module.vpc.aws_subnet.public_subnet"          \
+                        -target="module.vpc.aws_subnet.private_subnet"          
 
-				"${TERRAFORM}"            \
-            			apply                 \
-	                        -auto-approve         \
-        	               	-input=false          \
-				"${plan_file}"
- 			fi
+			"${TERRAFORM}"            \
+			plan                  \
+			-input=false          \
+			-out="${plan_file}"
+
+			"${TERRAFORM}"            \
+			apply                 \
+                        -auto-approve         \
+			-input=false          \
+			"${plan_file}"
 
     		else
 			if [ -z "${dir1}" ]; then
@@ -205,26 +195,16 @@ tf_deploy() {
        				return 1
   			fi
 
-	    		if [ -z "${var_file}" ]; then
-        			var_file='terraform.tfvars'
-    			fi
+			"${TERRAFORM}"            \
+			plan                  \
+			-input=false          \
+			-out="${plan_file}"
 
-			if [ -z "${plan_file}" ]; then
-				plan_file='plan_file'
-			fi
-		
-	        	if
-                		"${TERRAFORM}"            \
-                       		plan                  \
-	                       	-input=false          \
-        	               	-out="${plan_file}"
-
-				"${TERRAFORM}"            \
-                       		apply                 \
-                       		-auto-approve         \
-       	                	-input=false          \
-				"${plan_file}"
-			fi
+			"${TERRAFORM}"            \
+			apply                 \
+			-auto-approve         \
+			-input=false          \
+			"${plan_file}"
 		fi		
     cd ..
     done
