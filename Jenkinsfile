@@ -86,7 +86,7 @@ pipeline
 			for (int i = destroy_list.size() - 1; i >= 0; i--)
 			{
 				echo "Running Terraform in ${destroy_list[i]}"
-				dir('terraform/deployments/'+apply_list[i])
+				dir('terraform/deployments/'+destroy_list[i])
 				{
 					withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1')
 					{
