@@ -9,6 +9,9 @@ pipeline
             description: 'Terraform action to apply or destroy',
             name: 'action'
     )
+    
+    checkboxParameter(name: 'Modules', format: 'JSON',
+                pipelineSubmitContent: '{"CheckboxParameter": [{"key": "VPC","value": "vpc"},{"key": "Key-Pair","value": "key-pair"},{"key": "EC2 Instance","value": "ec2"}]}', description: '')
   }
   stages 
   {   
@@ -38,6 +41,7 @@ pipeline
                     		sh 'terraform apply -auto-approve'
             		}
 		}
+		print params['my-checkbox']
             	script
 		{
             		def apply_list = ['vpc']
@@ -50,8 +54,10 @@ pipeline
                     			dir(subdir) 
 					{
                         			sh 'terraform init -upgrade'
-                        			sh 'terraform apply -target="aws_vpc.vpc" -target="aws_subnet.public_subnet" -target="aws_subnet.private_subnet" -auto-approve'
-                        			sh 'terraform apply'
+                        			sh 'terraform plan -target="module.vpc.aws_vpc.vpc" -target="module.vpc.aws_subnet.public_subnet" -target="module.vpc.aws_subnet.private_subnet" -out=tfplan'
+                        			sh 'terraform apply tfplan -auto-approve'
+						sh 'terraform plan -out=tfplan2'
+						sh 'terraform apply tfplan2 -auto-approve'
                     			}	
                 		}			
                 		else 
