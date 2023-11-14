@@ -41,14 +41,14 @@ pipeline
                     		sh 'terraform apply -auto-approve'
             		}
 		}
-		print params['my-checkbox']
+		print params['Modules']
             	script
 		{
             		def apply_list = ['vpc']
 			for (int i = 0; i < apply_list.size(); ++i)  
 			{
                 		echo "Running Terraform in ${apply_list[i]}"
-                		if (${apply_list[i]} == 'vpc') 
+                		if (${apply_list[i]} == "vpc") 
 				{
 					sh 'echo "in nested if condition"'
                     			dir(subdir) 
