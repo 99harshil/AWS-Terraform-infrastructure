@@ -32,7 +32,6 @@ pipeline
         }
         steps 
     	{
-		def apply_list = params.Modules.split(',')
             	dir('terraform/backend') 
 		{
                 	withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1') 
@@ -44,6 +43,7 @@ pipeline
 		}
             	script
 		{
+			def apply_list = params.Modules.split(',')
 			for (int i = 0; i < apply_list.size(); ++i)  
 			{
                 		echo "Running Terraform in ${apply_list[i]}"
@@ -80,9 +80,9 @@ pipeline
         }
 	steps
 	{
-		def destroy_list = params.Modules.split(',')
 		script
 		{
+			def destroy_list = params.Modules.split(',')
 			for (int i = destroy_list.size() - 1; i >= 0; i--)
 			{
 				echo "Running Terraform in ${destroy_list[i]}"
