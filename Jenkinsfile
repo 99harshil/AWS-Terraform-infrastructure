@@ -13,10 +13,9 @@ pipeline
     checkboxParameter(
 	name: 'Modules', 
 	format: 'JSON',
-        pipelineSubmitContent: '{"CheckboxParameter": [{"key": "VPC","value": "vpc"},
-						       {"key": "Credstash","value": "credstash"},
-						       {"key": "EC2 Instance","value": "ec2"}]}', 
-	description: 'AWS modules to deploy or destroy')
+        pipelineSubmitContent: '{"CheckboxParameter": [{"key": "VPC","value":"vpc"}, {"key": "Credstash","value": "credstash"}, {"key": "EC2 Instance","value": "ec2"}]}', 
+	description: 'AWS modules to deploy or destroy'
+    )
   }
   
   stages 
