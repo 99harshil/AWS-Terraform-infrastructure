@@ -69,3 +69,10 @@ Step 4: ansible --version
 Step 5: ansible-community --version
 Step 6: python3 -m pip install --user argcomplete
 Step 7: activate-global-python-argcomplete --user
+
+***************** Download Credstash in Server ***************
+Step 1: Install python dependencies
+	1. sudo yum install gcc libffi-devel python-devel openssl-devel
+Step 2: pip install credstash
+Step 3: credstash setup
+
