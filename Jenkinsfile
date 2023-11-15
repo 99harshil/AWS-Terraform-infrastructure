@@ -5,14 +5,20 @@ pipeline
   parameters 
   {
     choice(
-            choices: ['apply', 'destroy'],
-            description: 'Terraform action to apply or destroy',
-            name: 'action'
+	choices: ['apply', 'destroy'],
+        description: 'Terraform action to apply or destroy',
+        name: 'action'
     )
     
-    checkboxParameter(name: 'Modules', format: 'JSON',
-                pipelineSubmitContent: '{"CheckboxParameter": [{"key": "VPC","value": "vpc"},{"key": "Key-Pair","value": "key-pair"},{"key": "EC2 Instance","value": "ec2"}]}', description: 'AWS modules to deploy or destroy')
+    checkboxParameter(
+	name: 'Modules', 
+	format: 'JSON',
+        pipelineSubmitContent: '{"CheckboxParameter": [{"key": "VPC","value": "vpc"},
+						       {"key": "Credstash","value": "credstash"},
+						       {"key": "EC2 Instance","value": "ec2"}]}', 
+	description: 'AWS modules to deploy or destroy')
   }
+  
   stages 
   {   
     stage('Checkout') 
@@ -65,7 +71,15 @@ pipeline
                 		}			
                 		else 
 				{
-                           		sh 'echo "Running Terraform in other dub-directory"'
+					sh 'echo "in else condition"'
+					dir('terraform/deployments/'+apply_list[i])
+					{
+						withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1')
+                                                {
+                                                        sh 'terraform plan -out=tfplan'
+							sh 'terraform apply -auto-approve tfplan'
+						}
+					}
                     		}
             		}
           	}
