@@ -91,6 +91,7 @@ pipeline
 					{
 						withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1')
                                                 {
+							sh 'terraform init -upgrade'
                                                         sh 'terraform plan -out=tfplan'
 							sh 'terraform apply -auto-approve tfplan'
 						}
