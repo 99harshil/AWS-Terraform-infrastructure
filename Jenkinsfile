@@ -1,7 +1,12 @@
 pipeline 
 {
   agent any
-   
+  
+  environment 
+  {
+        PATH = "/var/lib/jenkins/.local/bin:${env.PATH}"
+  }
+ 
   parameters 
   {
     choice(
@@ -35,7 +40,6 @@ pipeline
 	{
 		withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1')
 		{
-			sh 'sudo yum install gcc libffi-devel python-devel openssl-devel'
 			sh 'pip install credstash'
 			sh 'credstash setup'
 		}
