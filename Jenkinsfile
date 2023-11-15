@@ -21,6 +21,12 @@ pipeline
         pipelineSubmitContent: '{"CheckboxParameter": [{"key": "VPC","value":"vpc"}, {"key": "Credstash","value": "credstash"}, {"key": "EC2 Instance","value": "ec2"}]}', 
 	description: 'AWS modules to deploy or destroy'
     )
+    
+    string(
+	name: 'github_branch_name',
+	defaultValue: 'Credstash',
+	description: 'Enter a string value'
+    )
   }
   
   stages 
@@ -28,10 +34,8 @@ pipeline
     stage('Checkout') 
     {
         steps {
-            git branch: 'master',
-                credentialsId: 'my_cred_id',
+            git branch: '${params.github_branch_name}',
                 url: 'https://github.com/99harshil/AWS-Terraform-infrastructure.git'
-            sh "ls"
         }
     }
     stage('Create Environment')
@@ -91,6 +95,8 @@ pipeline
 					{
 						withAWS(credentials: '493d0f87-10d7-4be2-9108-f18321145beb', region: 'us-east-1')
                                                 {
+							sh 'ls -la'
+							sh 'pwd'
 							sh 'terraform init -upgrade'
                                                         sh 'terraform plan -out=tfplan'
 							sh 'terraform apply -auto-approve tfplan'
