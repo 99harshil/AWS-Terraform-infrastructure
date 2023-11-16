@@ -35,7 +35,7 @@ pipeline
     {
         steps {
             git branch: '${params.github_branch_name}',
-                url: 'https://github.com/99harshil/AWS-Terraform-infrastructure.git'
+            url: 'https://github.com/99harshil/AWS-Terraform-infrastructure.git'
         }
     }
     stage('Create Environment')
