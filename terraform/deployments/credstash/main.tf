@@ -1,12 +1,5 @@
 terraform {
-  backend "s3" {
-    bucket         = "tfstate-harshil-bucket"
-    key            = "credstash/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "tfstate-harshil-table"
-    encrypt        = true
-
-  }
+  backend "s3" {}
 }
 
 module "credstash" {

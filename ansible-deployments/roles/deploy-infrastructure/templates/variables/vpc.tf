@@ -1,31 +1,31 @@
 variable "vpc_name" {
   description = "name of vpc"
   type = string
-  default = "harshil"
+  default = "{{basename}}"
 }
 
 variable "aws_region" {
   description = "Region of AWS cloud"
   type = string
-  default = "us-east-1"
+  default = "{{aws_region}}"
 }
 
 variable "span_az" {
   description = "Number of availability zones"
   type        = number
-  default     = 2
+  default     = {{span_azs}}
 }
 
 variable "enable_ig" {
   type        = bool
   description = "Value for creating Intenet Gatewway"
-  default     = "false"
+  default     = "{{enable_internet_gateway}}"
 }
 
 variable "enable_ng" {
   type        = bool
   description = "Value for creating NAT Gateway"
-  default     = "false"
+  default     = "{{enable_nat_gateway}}"
 }
 
 variable "nacl_rules" {

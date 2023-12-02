@@ -1,0 +1,68 @@
+- name: Transfer backend variable file  to the Terraform backend Directory
+  template:
+       src: "variables/{{ item.src }}"
+       dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform/{{item.dest}}"
+  with_items:
+    - {src: 'backend.tf' , dest: 'backend/variables.tf'}
+
+- name: Transfer backend Conf File to the Terraform deployments Directory
+  template:
+       src: "backend/{{ item.src }}"
+       dest: "{{ tf_scripts_path }}/{{ item.dest }}"
+  with_items:
+    - {src: 'vpc.conf' , dest: 'vpc/backend.conf'}
+    - {src: 'credstash.conf' , dest: 'credstash/backend.conf'}
+
+- name: Transfer Variable Templates File to the Terraform depployments Directory
+  template:
+       src: "variables/{{ item.src }}"
+       dest: "{{ tf_scripts_path }}/{{ item.dest }}"
+  with_items:
+    - {src: 'vpc.tf' , dest: 'vpc/variables.tf'}
+    - {src: 'credstash.tf' , dest: 'credstash/variables.tf'}
+
+- name: Infrastructure destruction
+  command: "{{ item }}"
+  with_items:
+    - chmod u+x tf.sh
+    - ./tf.sh destroy ./deployments/
+    - ./tf.sh backend_destroy ./backend
+  args:
+    chdir: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform/"
+
+- debug: 
+       msg: "Infrastructure is Destroyed"
+
+- name: Fetching VPC Name from AWS
+  ec2_vpc_net_info:
+        validate_certs: no  
+        filters:
+            "tag:Name": "{{ user_vpc_name }}"
+  register: vpc
+       
+- name: Validating Vpc
+  ansible.builtin.debug:
+          msg: "{{destroy_msg}}"
+  when: user_vpc_name not in vpc.vpcs | map(attribute='tags.Name') | list 
+
+- name: Fetching credstash Information from Aws Cli
+  command: >
+      aws resourcegroupstaggingapi get-resources \
+        --tag-filters Key=Name,Values="{{user_credstash_table_name}}" --resource-type-filters 'dynamodb'
+  register: table_list
+
+- name: Fetching Credstash Table name
+  set_fact:
+      info: "{{ table_list.stdout }}"
+  register: table_info
+
+- name: hecking variable
+  ansible.builtin.debug:
+      msg: "{{ table_info.ansible_facts.info.ResourceTagMappingList }}"
+
+- name: Validate Credstash Table
+  ansible.builtin.debug:
+      msg: "{{destroy_msg}}"
+  loop: "{{ table_info.ansible_facts.info.ResourceTagMappingList }}"
+  when: user_credstash_table_name not in item.ResourceARN.split('/')[1] 
+

@@ -3,8 +3,8 @@
 # "key-pair" "ec2-instance" "security-group" "classic-load-balancer" "rds"
 # "rds" "classic-load-balancer" "security-group" "ec2-instance" "key-pair" 
 
-deploy_infrastructure=( "vpc" )
-destroy_infrastructure=( "vpc" )
+deploy_infrastructure=( "vpc" "credstash" )
+destroy_infrastructure=( "credstash" "vpc" )
 
 # Call 'terraform backend' for a directory
 tf_backend() {
@@ -113,6 +113,10 @@ tf_init() {
 	if [ -z "${var_file}" ]; then
 		var_file='terraform.tfvars'
     	fi
+
+	if [ -z "${backend_file}" ]; then
+                backend_file='backend.conf'
+        fi
 
 	if [ -e "${var_file}" ] || [ -e "${dir1}/${var_file}" ]; then
         	"${TERRAFORM}"                    \

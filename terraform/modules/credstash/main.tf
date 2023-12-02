@@ -31,6 +31,9 @@ resource "aws_dynamodb_table" "credstash-db" {
     name = "version"
     type = "S"
   }
+  tags = {
+    Name = "${var.kms_key_name}-credstash-table"
+  }
 }
 
 ## Writer Policy

@@ -1,30 +1,30 @@
 variable "create_credstash" {
   type        = bool
   description = "Bool value for creating credstash module"
-  default     = "true"
+  default     = "{{create_credstash_table}}"
 }
 
 variable "name" {
   type        = string
   description = "Name of credstash module"
-  default     = "harshil"
+  default     = "{{basename}}"
 }
 
 variable "read_policy" {
   type        = bool
   description = "Bool value for creating read policy"
-  default     = "true"
+  default     = "{{enable_read_policy}}"
 }
 
 variable "write_policy" {
   type        = bool
   description = "Bool value for creating write policy"
-  default     = "true"
+  default     = "{{enable_write_policy}}"
 }
 
 variable "aws_region" {
   description = "Region of AWS cloud"
   type = string
-  default = "us-east-1"
+  default = "{{aws_region}}"
 }
 
