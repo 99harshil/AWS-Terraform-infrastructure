@@ -1,0 +1,13 @@
+- name: Deploy Cloud Infrastructure.
+  gather_facts: yes
+  hosts: localhost
+  become: no
+  roles:
+          - {role: deploy-infrastructure, when: deploy_infrastructure == true}
+
+- name: Destroy Cloud Infrastructure.
+  gather_facts: yes
+  hosts: localhost
+  become: no
+  roles:
+          - {role: destroy-infrastructure, when: destroy_infrastructure == true}
