@@ -3,8 +3,8 @@
 # "key-pair" "ec2-instance" "security-group" "classic-load-balancer" "rds"
 # "rds" "classic-load-balancer" "security-group" "ec2-instance" "key-pair" 
 
-deploy_infrastructure=( "vpc" )
-destroy_infrastructure=( "vpc" )
+deploy_infrastructure=( "vpc", "credstash" )
+destroy_infrastructure=( "credstash", "vpc" )
 
 # Call 'terraform backend' for a directory
 tf_backend() {
