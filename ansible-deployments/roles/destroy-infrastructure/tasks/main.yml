@@ -21,18 +21,17 @@
     - {src: 'vpc.tf' , dest: 'vpc/variables.tf'}
     - {src: 'credstash.tf' , dest: 'credstash/variables.tf'}
 
-- name: Infrastructure deployment
+- name: Infrastructure destruction
   command: "{{ item }}"
   with_items:
     - chmod u+x tf.sh
-    - ./tf.sh backend ./backend
-    - ./tf.sh init ./deployments/
-    - ./tf.sh deploy ./deployments/
+    - ./tf.sh destroy ./deployments/
+    - ./tf.sh backend_destroy ./backend
   args:
     chdir: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform/"
 
 - debug: 
-       msg: "Infrastructure is Created"
+       msg: "Infrastructure is Destroyed"
 
 - name: Fetching VPC Name from AWS
   ec2_vpc_net_info:
@@ -43,8 +42,8 @@
        
 - name: Validating Vpc
   ansible.builtin.debug:
-          msg: "{{msg}}"
-  when: user_vpc_name in vpc.vpcs | map(attribute='tags.Name') | list 
+          msg: "{{destroy_msg}}"
+  when: user_vpc_name not in vpc.vpcs | map(attribute='tags.Name') | list 
 
 - name: Fetching credstash Information from Aws Cli
   command: >
@@ -56,9 +55,14 @@
   set_fact:
       info: "{{ table_list.stdout }}"
   register: table_info
-  
+
+- name: hecking variable
+  ansible.builtin.debug:
+      msg: "{{ table_info.ansible_facts.info.ResourceTagMappingList }}"
+
 - name: Validate Credstash Table
   ansible.builtin.debug:
-      msg: "{{msg}}"
+      msg: "{{destroy_msg}}"
   loop: "{{ table_info.ansible_facts.info.ResourceTagMappingList }}"
-  when: user_credstash_table_name in [ item.ResourceARN.split('/')[1] ]
+  when: user_credstash_table_name not in item.ResourceARN.split('/')[1] 
+

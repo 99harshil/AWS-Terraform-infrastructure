@@ -3,14 +3,15 @@
 ##############################################################################################
 
 user_vpc_name: "{{ basename }}-vpc"
-user_credstash_table_name: "{{ basename }}-credstash"
+user_credstash_table_name: "{{ basename }}-credstash-table"
 
 
 ##############################################################################################
 #global variables
 ##############################################################################################
 
-msg: "Validation successful"
+msg: "Deployment successful"
+destroy_msg: "Destruction successful"
 aws_region: us-east-1
 basename: harshil
 tf_scripts_path: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform/deployments"
