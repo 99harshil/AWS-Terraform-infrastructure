@@ -1,0 +1,22 @@
+##############################################################################################
+#auto-generated values -- start#
+##############################################################################################
+
+user_vpc_name: "{{ basename }}-vpc"
+user_credstash_table_name: "{{ basename }}-credstash"
+
+
+##############################################################################################
+#global variables
+##############################################################################################
+
+msg: "Validation successful"
+aws_region: us-east-1
+basename: performance-scripts
+tf_scripts_path: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform/deploymemts"
+
+##############################################################################################
+#backend variables
+##############################################################################################
+backend_s3_bucket_name: "tf-state-{{basename}}-bucket"
+backend_dynamodb_name: "tf-state-{{basename}}-table"
