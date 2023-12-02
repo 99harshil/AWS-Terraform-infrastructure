@@ -15,7 +15,7 @@
 
 - name: Transfer Variable Templates File to the Terraform depployments Directory
   template:
-       src: "{{ item.src }}"
+       src: "variables/{{ item.src }}"
        dest: "{{ tf_scripts_path }}/{{ item.dest }}"
   with_items:
     - {src: 'vpc.tf' , dest: 'vpc/variables.tf'}

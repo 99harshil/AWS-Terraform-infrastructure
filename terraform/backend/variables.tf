@@ -7,18 +7,18 @@ variable "aws_region" {
 variable "basename" {
   type        = string
   description = "Name tag prefix to use for all AWS resources"
-  default     = "test"
+  default     = "harshil"
 }
 
 variable "bucket_name" {
   type        = string
   description = "Name of s3 bucket to use AWS resources"
-  default     = "tfstate-harshil-bucket"
+  default     = "tf-state-harshil-bucket"
 }
 
 variable "table_name" {
   type        = string
   description = "Name of dynamodb table to use for all AWS resources"
-  default     = "tfstate-harshil-table"
+  default     = "tf-state-harshil-table"
 }
 

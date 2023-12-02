@@ -1,7 +1,7 @@
 variable "create_credstash" {
   type        = bool
   description = "Bool value for creating credstash module"
-  default     = true
+  default     = "true"
 }
 
 variable "name" {
@@ -13,13 +13,13 @@ variable "name" {
 variable "read_policy" {
   type        = bool
   description = "Bool value for creating read policy"
-  default     = true
+  default     = "true"
 }
 
 variable "write_policy" {
   type        = bool
   description = "Bool value for creating write policy"
-  default     = true
+  default     = "true"
 }
 
 variable "aws_region" {
