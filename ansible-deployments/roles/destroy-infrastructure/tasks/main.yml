@@ -12,6 +12,7 @@
   with_items:
     - {src: 'vpc.conf' , dest: 'vpc/backend.conf'}
     - {src: 'credstash.conf' , dest: 'credstash/backend.conf'}
+    - {src: 'ec2-instance.conf' , dest: 'ec2-instance/backend.conf'}
 
 - name: Transfer Variable Templates File to the Terraform depployments Directory
   template:
@@ -20,6 +21,7 @@
   with_items:
     - {src: 'vpc.tf' , dest: 'vpc/variables.tf'}
     - {src: 'credstash.tf' , dest: 'credstash/variables.tf'}
+    - {src: 'ec2-instance.tf' , dest: 'ec2-instance/variables.tf'}  
 
 - name: Infrastructure destruction
   command: "{{ item }}"
@@ -39,7 +41,31 @@
         filters:
             "tag:Name": "{{ user_vpc_name }}"
   register: vpc
-       
+
+- name: Fetching Security Group name from Aws
+  amazon.aws.ec2_group_info:
+    filters:
+      "tag:Tier": "{{basename}}"
+  register: sg
+
+- name: Validate Security Group name
+  ansible.builtin.debug:
+          msg: "{{destroy_msg}}"
+  when: basename in sg.security_groups | map(attribute='tags.Tier') | list
+
+- name: Fetching EC2 Instances Names from Aws
+  ec2_instance_info:
+      validate_certs: no
+      filters:
+          instance-state-name: [ "running"]
+  register: instances
+
+- name: Validating EC2 Instances
+  ansible.builtin.debug:
+          msg: "{{destroy_msg}}"
+  loop: "{{ range(0, ec2_instance_count)| list }}"
+  when: "'{{user_ec2_instance_name}}-{{item}}'  in instances.instances | map(attribute='tags.Name') | list"
+
 - name: Validating Vpc
   ansible.builtin.debug:
           msg: "{{destroy_msg}}"
@@ -56,13 +82,39 @@
       info: "{{ table_list.stdout }}"
   register: table_info
 
-- name: hecking variable
-  ansible.builtin.debug:
-      msg: "{{ table_info.ansible_facts.info.ResourceTagMappingList }}"
-
 - name: Validate Credstash Table
   ansible.builtin.debug:
       msg: "{{destroy_msg}}"
   loop: "{{ table_info.ansible_facts.info.ResourceTagMappingList }}"
   when: user_credstash_table_name not in item.ResourceARN.split('/')[1] 
+
+- name: Fetching Backend S3 Bucket
+  community.aws.aws_s3_bucket_info:
+      name_filter: "{{backend_s3_bucket_name}}"
+  register: s3_bucket
+
+- name: Validating Backend S3 Bucket
+  ansible.builtin.debug:
+          msg: "{{destroy_msg}}"
+  when: backend_s3_bucket_name not in s3_bucket.buckets | map(attribute='name') | list
+
+- name: Delete terraform configuration files in infrastructure Repo
+  ansible.builtin.find:
+      paths: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform"
+      file_type: any
+      use_regex: false
+      hidden: true
+      recurse: yes
+      patterns:
+       - '.terraform'
+       - 'terraform.tfstate'
+       - 'terraform.tfstate.backup'
+       - 'plan_file'
+       - '.terraform.lock.hcl'
+  register: result
+
+- file:
+     path: "{{item.path}}"
+     state: absent
+  with_items: " {{ result.files }}"
 

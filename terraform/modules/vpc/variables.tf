@@ -55,3 +55,13 @@ variable "acl_rules" {
   description = "Network ACLs rules for public and private subnets"
   type        = list(map(string))
 }
+
+variable "my_ip_address" {
+  type        = string
+  description = "Ip address of my local system for nacl rules"
+}
+
+variable "nacl_port" {
+  type        = list(any)
+  description = "Ports want to expose in Nacl Rules"
+}

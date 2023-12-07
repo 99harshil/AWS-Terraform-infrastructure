@@ -4,7 +4,7 @@
 
 user_vpc_name: "{{ basename }}-vpc"
 user_credstash_table_name: "{{ basename }}-credstash-table"
-
+user_ec2_instance_name: "{{basename}}-ec2-instance"
 
 ##############################################################################################
 #global variables
@@ -12,8 +12,6 @@ user_credstash_table_name: "{{ basename }}-credstash-table"
 
 msg: "Deployment successful"
 destroy_msg: "Destruction successful"
-aws_region: us-east-1
-basename: harshil
 tf_scripts_path: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infrastructure/terraform/deployments"
 
 ##############################################################################################
@@ -21,3 +19,8 @@ tf_scripts_path: "{{ lookup('ansible.builtin.env', 'HOME') }}/AWS-Terraform-infr
 ##############################################################################################
 backend_s3_bucket_name: "tf-state-{{basename}}-bucket"
 backend_dynamodb_name: "tf-state-{{basename}}-table"
+
+##############################################################################################
+#VPC variables
+##############################################################################################
+user_ports: '"22", "8080"'

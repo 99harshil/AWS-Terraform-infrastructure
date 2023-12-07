@@ -48,24 +48,21 @@ variable "nacl_rules" {
     },
     {
       rule_action = "allow"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_block  = "192.168.169.133/32"
-    },
-    {
-      rule_action = "allow"
-      from_port   = 8080
-      to_port     = 8080
-      protocol    = "tcp"
-      cidr_block  = "192.168.169.133/32"
-    },
-    {
-      rule_action = "allow"
       from_port   = 80
       to_port     = 80
       protocol    = "tcp"
       cidr_block  = "0.0.0.0/0"
     }
   ]
+}
+
+variable "my_ip_address" {
+  type    = string
+  default = "{{my_ip_address}}"
+}
+
+variable "nacl_port" {
+  type = list(any)
+
+  default = [{{user_ports}}]
 }

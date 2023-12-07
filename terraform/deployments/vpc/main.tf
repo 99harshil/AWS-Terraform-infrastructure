@@ -16,4 +16,6 @@ module "vpc" {
   span_azs                             = var.span_az
   aws_region                           = data.aws_region.current.name
   acl_rules                            = var.nacl_rules
+  my_ip_address                        = var.my_ip_address
+  nacl_port                            = var.nacl_port
 }

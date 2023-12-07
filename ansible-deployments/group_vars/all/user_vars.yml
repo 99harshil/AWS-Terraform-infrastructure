@@ -1,13 +1,24 @@
-############## Ansible conditional variables ################
+############## Ansible conditional Variables ################
 deploy_infrastructure: True
 destroy_infrastructure: False
 
-############## VPC variables ###################
+############## Gloabal Variables ##############  
+aws_region: us-east-1
+basename: harshil
+
+############## VPC Variables ###################
 span_azs: 2
-enable_internet_gateway: "false"
-enable_nat_gateway: "false"
+enable_internet_gateway: "true"
+enable_nat_gateway: "true"
 
 ############# Credstash Variables ##############
 create_credstash_table: "true"
 enable_read_policy: "true"
 enable_write_policy: "true"
+
+############# EC2 Variables ##############
+ec2_instance_count: 1
+os_platform: amazon-2_lts #define from list ["centos-6, centos-7, centos-8, rhel-6, rhel-7, rhel-8, rhel-9, amazon-2_lts]
+instance_type: t2.micro
+my_ip_address: 192.168.169.133
+key_name: ssh_rsa

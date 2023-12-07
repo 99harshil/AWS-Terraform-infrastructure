@@ -19,13 +19,13 @@ variable "span_az" {
 variable "enable_ig" {
   type        = bool
   description = "Value for creating Intenet Gatewway"
-  default     = "false"
+  default     = "true"
 }
 
 variable "enable_ng" {
   type        = bool
   description = "Value for creating NAT Gateway"
-  default     = "false"
+  default     = "true"
 }
 
 variable "nacl_rules" {
@@ -48,24 +48,21 @@ variable "nacl_rules" {
     },
     {
       rule_action = "allow"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_block  = "192.168.169.133/32"
-    },
-    {
-      rule_action = "allow"
-      from_port   = 8080
-      to_port     = 8080
-      protocol    = "tcp"
-      cidr_block  = "192.168.169.133/32"
-    },
-    {
-      rule_action = "allow"
       from_port   = 80
       to_port     = 80
       protocol    = "tcp"
       cidr_block  = "0.0.0.0/0"
     }
   ]
+}
+
+variable "my_ip_address" {
+  type    = string
+  default = "192.168.169.133"
+}
+
+variable "nacl_port" {
+  type = list(any)
+
+  default = ["22", "8080"]
 }
